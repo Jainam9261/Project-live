@@ -1,0 +1,9 @@
+Place logo files here:
+- hexfn-logo.png (main logo)
+- hexfn-logo-white.png (white/negative version for footer)
+
+Hero images in /assets/hero/:
+- hero-1.jpg, hero-2.jpg, hero-3.jpg (or use Unsplash fallbacks in code)
+
+Product images in /assets/products/:
+- cup-4oz.jpg, cup-8oz.jpg, cup-12oz.jpg, cup-16oz.jpg

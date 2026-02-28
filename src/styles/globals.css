@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ——— Light Premium Eco design tokens ——— */
+:root {
+  --hexfn-bg: #F7F9F8;
+  --hexfn-green: #2E7D5B;
+  --hexfn-sage: #A8D5BA;
+  --hexfn-navy: #0E2540;
+  --hexfn-text: #5F6B6B;
+  --hexfn-cta: #FF6B35;
+  --font-heading: 'Outfit', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --shadow-soft: 0 4px 24px rgba(14, 37, 64, 0.06);
+  --shadow-elevated: 0 24px 48px -12px rgba(14, 37, 64, 0.12);
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-smooth: 0.4s;
+}
+
+@layer base {
+  html {
+    /* Use native scroll behavior for a natural feel; handle any smooth anchor scrolls per-interaction instead of globally. */
+  }
+  body {
+    @apply font-body text-hexfn-text antialiased bg-hexfn-bg;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold text-hexfn-navy;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-hexfn-green;
+  }
+  .skip-link {
+    @apply absolute -top-full left-4 z-[100] bg-hexfn-cta text-white px-4 py-2 rounded-2xl font-medium transition-all duration-300 focus:top-4 focus:outline-none focus:ring-2 focus:ring-hexfn-green;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(95, 107, 107, 0.3) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: rgba(95, 107, 107, 0.25);
+    border-radius: 9999px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(95, 107, 107, 0.4);
+  }
+}
+
+/* ——— Section spacing rhythm (mobile-first: py-16 → py-20 tablet → py-28 desktop) ——— */
+.section-padding {
+  @apply py-16 md:py-20 lg:py-28 px-4 sm:px-6 lg:px-8;
+}
+
+/* ——— Accent line under headings ——— */
+.accent-line {
+  position: relative;
+}
+.accent-line::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 48px;
+  height: 4px;
+  background: var(--hexfn-green);
+  border-radius: 2px;
+}
+
+/* ——— Glass panel (soft highlight) ——— */
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-xl rounded-3xl border border-white/60 shadow-soft;
+}
+
+@layer utilities {
+  .animate-in-up {
+    animation: animateInUp var(--duration-smooth) var(--ease-out-expo) forwards;
+  }
+  .animate-reveal {
+    animation: reveal 0.8s var(--ease-out-expo) forwards;
+  }
+  .transition-smooth {
+    transition: all 0.35s var(--ease-out-expo);
+  }
+}
+@keyframes animateInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ——— Hero carousel overlay (dark gradient for readability) ——— */
+.hero-overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(14, 37, 64, 0.75) 0%,
+    rgba(14, 37, 64, 0.4) 50%,
+    rgba(14, 37, 64, 0.5) 100%
+  );
+}
+
+/* ——— Gradient band (legacy / alternate hero overlay) ——— */
+.gradient-band {
+  background: linear-gradient(
+    to top,
+    rgba(14, 37, 64, 0.85) 0%,
+    rgba(14, 37, 64, 0.3) 40%,
+    transparent 100%
+  );
+}
