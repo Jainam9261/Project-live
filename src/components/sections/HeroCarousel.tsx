@@ -28,8 +28,6 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
     handleSwiper,
     handleSlideChange,
     goToSlide,
-    slidePrev,
-    slideNext,
     swiperInstance,
   } = useCarousel({ totalSlides: slides.length, slideSpeedMs: SLIDE_SPEED_MS });
 
@@ -91,29 +89,6 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
         activeIndex={activeIndex}
         onSelect={goToSlide}
       />
-
-      <div className="absolute left-2 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-1 sm:left-4 md:left-6">
-        <button
-          type="button"
-          onClick={slidePrev}
-          aria-label="Previous slide"
-          className="rounded-full p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-white/70 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-        >
-          <svg className="h-5 w-5 rotate-[-90deg]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </button>
-        <button
-          type="button"
-          onClick={slideNext}
-          aria-label="Next slide"
-          className="rounded-full p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-white/70 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-        >
-          <svg className="h-5 w-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </button>
-      </div>
 
       {!isPaused && (
         <HeroProgressBar durationMs={AUTOPLAY_DELAY_MS} key={activeIndex} />

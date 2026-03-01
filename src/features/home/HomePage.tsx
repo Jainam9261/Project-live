@@ -4,12 +4,11 @@ import { Features } from '@/components/sections/Features';
 import { ProductHighlight } from '@/components/sections/ProductHighlight';
 import { SustainabilitySnapshot } from '@/components/sections/SustainabilitySnapshot';
 import { CertificationsStrip } from '@/components/sections/CertificationsStrip';
-import { FeaturedBlog } from '@/components/sections/FeaturedBlog';
 import { CtaSection } from '@/components/sections/CtaSection';
 import { heroSlides } from './data';
 
 /**
- * Home page — hero carousel, value props, product highlights, sustainability, certs, blog, CTA.
+ * Home page — hero carousel, value props, product highlights, sustainability, certs, CTA.
  */
 export default function HomePage() {
   return (
@@ -23,7 +22,6 @@ export default function HomePage() {
       <ProductHighlight />
       <SustainabilitySnapshot />
       <CertificationsStrip />
-      <FeaturedBlog />
       <CtaSection />
     </>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/constants/site';
@@ -8,26 +8,41 @@ import { slideInRight } from '@/utils/motion';
 /**
  * Header — light premium nav, shrink-on-scroll, mobile menu with slide-in.
  */
-export function Header() {
+interface HeaderProps {
+  mobileMenuOpen?: boolean;
+  onMobileMenuOpenChange?: (open: boolean) => void;
+}
+
+export function Header({ mobileMenuOpen = false, onMobileMenuOpenChange }: HeaderProps) {
   const scrolled = useNavbarScrollState(48);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const scrollYRef = useRef(0);
   const location = useLocation();
 
-  useEffect(() => setMobileOpen(false), [location.pathname]);
+  const isOpen = onMobileMenuOpenChange ? mobileMenuOpen : internalOpen;
+  const setIsOpen = onMobileMenuOpenChange ?? setInternalOpen;
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
-      document.documentElement.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-    }
+    if (onMobileMenuOpenChange) onMobileMenuOpenChange(false);
+  }, [location.pathname, onMobileMenuOpenChange]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    scrollYRef.current = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollYRef.current}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.overflow = 'hidden';
     return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
       document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
+      window.scrollTo(0, scrollYRef.current);
     };
-  }, [mobileOpen]);
+  }, [isOpen]);
 
   return (
     <motion.header
@@ -82,13 +97,13 @@ export function Header() {
         <button
           type="button"
           className="lg:hidden p-3 min-w-[44px] min-h-[44px] rounded-2xl text-hexfn-navy hover:bg-hexfn-green-muted focus:outline-none focus:ring-2 focus:ring-hexfn-green transition-colors flex items-center justify-center"
-          aria-expanded={mobileOpen}
+          aria-expanded={isOpen}
           aria-controls="mobile-menu"
-          onClick={() => setMobileOpen((o) => !o)}
+          onClick={() => setIsOpen((o) => !o)}
         >
-          <span className="sr-only">{mobileOpen ? 'Close menu' : 'Open menu'}</span>
+          <span className="sr-only">{isOpen ? 'Close menu' : 'Open menu'}</span>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-            {mobileOpen ? (
+            {isOpen ? (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             ) : (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -98,7 +113,7 @@ export function Header() {
       </div>
 
       <AnimatePresence>
-        {mobileOpen && (
+        {isOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -107,7 +122,7 @@ export function Header() {
               transition={{ duration: 0.25 }}
               className="fixed inset-0 z-40 bg-hexfn-navy/20 backdrop-blur-sm lg:hidden"
               aria-hidden
-              onClick={() => setMobileOpen(false)}
+              onClick={() => setIsOpen(false)}
             />
             <motion.div
               id="mobile-menu"
@@ -118,10 +133,10 @@ export function Header() {
               className="fixed top-0 right-0 z-50 h-full w-full max-w-sm bg-white/98 backdrop-blur-xl border-l border-hexfn-green/10 shadow-elevated lg:hidden flex flex-col"
             >
               <div className="flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 border-b border-hexfn-green/10">
-                <span className="text-sm font-medium text-hexfn-text">Menu</span>
+                <span className="text-sm font-semibold text-hexfn-navy/90">Menu</span>
                 <button
                   type="button"
-                  onClick={() => setMobileOpen(false)}
+                  onClick={() => setIsOpen(false)}
                   aria-label="Close menu"
                   className="p-3 min-w-[44px] min-h-[44px] rounded-2xl text-hexfn-navy hover:bg-hexfn-green-muted focus:outline-none focus:ring-2 focus:ring-hexfn-green flex items-center justify-center"
                 >
@@ -143,8 +158,8 @@ export function Header() {
                   >
                     <Link
                       to={link.href}
-                      className="block py-4 px-3 min-h-[48px] text-base font-medium text-hexfn-navy hover:text-hexfn-green hover:bg-hexfn-green-muted rounded-xl transition-colors flex items-center"
-                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center py-4 px-3 min-h-[48px] text-base font-semibold text-hexfn-navy/95 hover:text-hexfn-green hover:bg-hexfn-green/10 rounded-xl transition-colors"
+                      onClick={() => setIsOpen(false)}
                     >
                       {link.label}
                     </Link>
@@ -159,7 +174,7 @@ export function Header() {
                   <Link
                     to="/contact"
                     className="flex items-center justify-center min-h-[48px] rounded-2xl bg-hexfn-cta px-6 py-3.5 text-base font-semibold text-white shadow-soft hover:shadow-cta-glow transition-shadow"
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() => setIsOpen(false)}
                   >
                     Get a Quote
                   </Link>

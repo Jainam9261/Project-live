@@ -48,7 +48,7 @@ export function Modal({ isOpen, onClose, children, title, 'aria-label': ariaLabe
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 12 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-[calc(100%-2rem)] sm:max-w-lg max-h-[85vh] sm:max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-hexfn-bg-card shadow-elevated border border-hexfn-green/5"
+            className="relative w-full max-w-[min(100%-2rem,28rem)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl max-h-[90vh] sm:max-h-[92vh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-white shadow-elevated border border-hexfn-green/10"
             onClick={(e) => e.stopPropagation()}
           >
             {title && (
