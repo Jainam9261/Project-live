@@ -5,9 +5,13 @@
 
 export const SITE_NAME = 'Hexfn Limited';
 
+/** Logo paths — your brand logo files (see public/assets/logo/LOGO_SPECS.md for dimensions). */
+export const LOGO_LIGHT_URL = '/assets/logo/hexfn-logo.png';
+export const LOGO_DARK_BG_URL = '/assets/logo/hexfn-logo-white.png';
+
 /** WhatsApp: use full international number without + or spaces. Open in chat with optional message. */
 export const WHATSAPP_NUMBER = '447770514867';
-export const WHATSAPP_MESSAGE = 'Hi, I\'d like to request a quote for eco packaging.';
+export const WHATSAPP_MESSAGE = "Hi! Can I get more details about your products?";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
 /** Build WhatsApp URL with a product-specific quote message. */

@@ -44,7 +44,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
   return (
     <section
       aria-label="Hero carousel"
-      className="hero-carousel relative h-screen min-h-[320px] sm:min-h-[480px] w-full overflow-hidden"
+      className="hero-carousel relative h-[70vh] min-h-[280px] min-[500px]:h-screen min-[500px]:min-h-[380px] sm:min-h-[480px] w-full overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
