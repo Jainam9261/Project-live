@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NAV_LINKS } from '@/constants/site';
+import { NAV_LINKS, LOGO_LIGHT_URL } from '@/constants/site';
 import { useNavbarScrollState } from '@/hooks';
 import { slideInRight } from '@/utils/motion';
 
@@ -16,32 +17,32 @@ interface HeaderProps {
 export function Header({ mobileMenuOpen = false, onMobileMenuOpenChange }: HeaderProps) {
   const scrolled = useNavbarScrollState(48);
   const [internalOpen, setInternalOpen] = useState(false);
-  const scrollYRef = useRef(0);
   const location = useLocation();
 
   const isOpen = onMobileMenuOpenChange ? mobileMenuOpen : internalOpen;
   const setIsOpen = onMobileMenuOpenChange ?? setInternalOpen;
 
+  // Lock scroll without moving the page — no position:fixed so no scroll-to-top
+  const applyScrollLock = () => {
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+  };
+
+  const removeScrollLock = () => {
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    document.body.style.touchAction = '';
+  };
+
   useEffect(() => {
     if (onMobileMenuOpenChange) onMobileMenuOpenChange(false);
   }, [location.pathname, onMobileMenuOpenChange]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isOpen) return;
-    scrollYRef.current = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollYRef.current}px`;
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.overflow = '';
-      window.scrollTo(0, scrollYRef.current);
-    };
+    applyScrollLock();
+    return removeScrollLock;
   }, [isOpen]);
 
   return (
@@ -59,14 +60,16 @@ export function Header({ mobileMenuOpen = false, onMobileMenuOpenChange }: Heade
           : 'bg-transparent'
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between max-w-7xl">
-        <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="Hexfn Limited home">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between max-w-7xl gap-4">
+        <Link to="/" className="flex items-center shrink-0 min-w-0 focus:outline-none focus:ring-2 focus:ring-hexfn-green/40 focus:ring-offset-2 rounded-lg" aria-label="Hexfn Limited home">
           <img
-            src="/assets/logo/hexfn-logo.svg"
+            src={LOGO_LIGHT_URL}
             alt="Hexfn Limited"
-            className={`transition-all duration-500 ease-out-expo ${scrolled ? 'h-8' : 'h-10'} w-auto`}
-            width={scrolled ? 120 : 150}
-            height={scrolled ? 32 : 40}
+            className={`w-auto max-w-[130px] sm:max-w-[150px] md:max-w-[180px] object-contain object-left transition-all duration-500 ease-out-expo ${
+              scrolled ? 'h-8' : 'h-9 sm:h-10'
+            }`}
+            width={180}
+            height={48}
           />
         </Link>
 
@@ -99,7 +102,13 @@ export function Header({ mobileMenuOpen = false, onMobileMenuOpenChange }: Heade
           className="lg:hidden p-3 min-w-[44px] min-h-[44px] rounded-2xl text-hexfn-navy hover:bg-hexfn-green-muted focus:outline-none focus:ring-2 focus:ring-hexfn-green transition-colors flex items-center justify-center"
           aria-expanded={isOpen}
           aria-controls="mobile-menu"
-          onClick={() => setIsOpen((o) => !o)}
+          onClick={() => {
+            if (!isOpen) {
+              setIsOpen(true);
+            } else {
+              setIsOpen(false);
+            }
+          }}
         >
           <span className="sr-only">{isOpen ? 'Close menu' : 'Open menu'}</span>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -112,78 +121,86 @@ export function Header({ mobileMenuOpen = false, onMobileMenuOpenChange }: Heade
         </button>
       </div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-0 z-40 bg-hexfn-navy/20 backdrop-blur-sm lg:hidden"
-              aria-hidden
-              onClick={() => setIsOpen(false)}
-            />
-            <motion.div
-              id="mobile-menu"
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={slideInRight}
-              className="fixed top-0 right-0 z-50 h-full w-full max-w-sm bg-white/98 backdrop-blur-xl border-l border-hexfn-green/10 shadow-elevated lg:hidden flex flex-col"
-            >
-              <div className="flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 border-b border-hexfn-green/10">
-                <span className="text-sm font-semibold text-hexfn-navy/90">Menu</span>
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  aria-label="Close menu"
-                  className="p-3 min-w-[44px] min-h-[44px] rounded-2xl text-hexfn-navy hover:bg-hexfn-green-muted focus:outline-none focus:ring-2 focus:ring-hexfn-green flex items-center justify-center"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <nav
-                aria-label="Mobile navigation"
-                className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 flex flex-col gap-1"
-              >
-                {NAV_LINKS.map((link, i) => (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, x: 12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.03 * i, duration: 0.25 }}
-                  >
-                    <Link
-                      to={link.href}
-                      className="flex items-center py-4 px-3 min-h-[48px] text-base font-semibold text-hexfn-navy/95 hover:text-hexfn-green hover:bg-hexfn-green/10 rounded-xl transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {link.label}
-                    </Link>
-                  </motion.div>
-                ))}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {isOpen && (
+              <>
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="mt-6 pt-6 border-t border-hexfn-green/10"
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="fixed inset-0 z-[9998] bg-hexfn-navy/25 backdrop-blur-md lg:hidden touch-none"
+                  aria-hidden
+                  onClick={() => setIsOpen(false)}
+                />
+                <motion.div
+                  id="mobile-menu"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={slideInRight}
+                  className="fixed top-0 right-0 z-[9999] h-full w-full max-w-sm bg-white/85 backdrop-blur-2xl lg:hidden flex flex-col border-l border-white/40 shadow-[0_0_40px_rgba(34,168,83,0.08)]"
                 >
-                  <Link
-                    to="/contact"
-                    className="flex items-center justify-center min-h-[48px] rounded-2xl bg-hexfn-cta px-6 py-3.5 text-base font-semibold text-white shadow-soft hover:shadow-cta-glow transition-shadow"
-                    onClick={() => setIsOpen(false)}
+                  <div className="flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 border-b border-hexfn-green/15 bg-white/50 backdrop-blur-sm">
+                    <span className="text-xl font-bold tracking-tight text-hexfn-navy">Menu</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsOpen(false)}
+                      aria-label="Close menu"
+                      className="p-3 min-w-[44px] min-h-[44px] rounded-2xl text-hexfn-navy/80 hover:text-hexfn-green hover:bg-hexfn-green/10 focus:outline-none focus:ring-2 focus:ring-hexfn-green flex items-center justify-center transition-colors"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <nav
+                    aria-label="Mobile navigation"
+                    className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 flex flex-col gap-1"
                   >
-                    Get a Quote
-                  </Link>
+                    {NAV_LINKS.map((link, i) => (
+                      <motion.div
+                        key={link.href}
+                        initial={{ opacity: 0, x: 12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.03 * i, duration: 0.25 }}
+                      >
+                        <Link
+                          to={link.href}
+                          className={`flex items-center py-4 px-3 min-h-[48px] text-base font-semibold rounded-xl transition-all duration-200 ${
+                            location.pathname === link.href
+                              ? 'text-hexfn-green bg-hexfn-green/10'
+                              : 'text-hexfn-navy/90 hover:text-hexfn-green hover:bg-hexfn-green/10'
+                          }`}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      </motion.div>
+                    ))}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="mt-6 pt-6 border-t border-hexfn-green/15"
+                    >
+                      <Link
+                        to="/contact"
+                        className="flex items-center justify-center min-h-[48px] rounded-2xl bg-hexfn-cta px-6 py-3.5 text-base font-semibold text-white shadow-soft hover:shadow-cta-glow transition-shadow"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Get a Quote
+                      </Link>
+                    </motion.div>
+                  </nav>
                 </motion.div>
-              </nav>
-            </motion.div>
-          </>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </motion.header>
   );
 }

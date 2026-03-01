@@ -43,10 +43,10 @@ export function HeroSlide({ slide, isActive }: HeroSlideProps) {
       />
 
       {/* Content — left side, staggered; center-align on small mobile */}
-      <div className="container relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-center px-4 sm:px-6 lg:px-8">
+      <div className="container relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-center px-4 pb-24 min-[500px]:pb-28 sm:px-6 sm:pb-20 lg:px-8">
         <div className="max-w-3xl w-full mx-auto md:mx-0 text-center md:text-left">
           <motion.h1
-            className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+            className="font-heading text-2xl font-bold tracking-tight text-white min-[400px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
             initial={{ opacity: 0, x: -20 }}
             animate={
               isActive
@@ -62,7 +62,7 @@ export function HeroSlide({ slide, isActive }: HeroSlideProps) {
             {slide.headline}
           </motion.h1>
           <motion.p
-            className="mt-4 sm:mt-5 max-w-xl mx-auto md:mx-0 text-base sm:text-lg lg:text-xl xl:text-2xl text-white/90 leading-relaxed"
+            className="mt-3 sm:mt-5 max-w-xl mx-auto md:mx-0 text-sm min-[500px]:text-base sm:text-lg lg:text-xl xl:text-2xl text-white/90 leading-relaxed"
             initial={{ opacity: 0, x: -20 }}
             animate={
               isActive
@@ -78,7 +78,7 @@ export function HeroSlide({ slide, isActive }: HeroSlideProps) {
             {slide.subline}
           </motion.p>
           <motion.div
-            className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center md:justify-start gap-3 sm:gap-4"
+            className="mt-5 sm:mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center md:justify-start gap-3 sm:gap-4"
             initial={{ opacity: 0, y: 16 }}
             animate={
               isActive
@@ -93,7 +93,7 @@ export function HeroSlide({ slide, isActive }: HeroSlideProps) {
           >
             <Link
               to={slide.ctaHref}
-              className="hero-cta group relative inline-flex items-center justify-center rounded-xl bg-hexfn-cta px-6 py-3.5 sm:px-7 sm:py-4 text-sm sm:text-base font-semibold text-white shadow-soft transition-all duration-300 hover:scale-[1.03] hover:shadow-cta-glow focus:outline-none focus:ring-2 focus:ring-hexfn-green focus:ring-offset-2 focus:ring-offset-transparent w-full sm:w-auto min-h-[48px]"
+              className="hero-cta group relative inline-flex items-center justify-center rounded-xl bg-hexfn-cta px-5 py-3.5 sm:px-7 sm:py-4 text-sm sm:text-base font-semibold text-white shadow-soft transition-all duration-300 hover:scale-[1.03] hover:shadow-cta-glow focus:outline-none focus:ring-2 focus:ring-hexfn-green focus:ring-offset-2 focus:ring-offset-transparent w-full max-w-[280px] min-[500px]:max-w-none sm:w-auto min-h-[48px]"
             >
               {slide.ctaText}
             </Link>

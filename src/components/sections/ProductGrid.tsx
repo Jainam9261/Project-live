@@ -202,11 +202,11 @@ export function ProductGrid() {
                   <span className="font-medium text-hexfn-navy">Sizes:</span> {selected.sizes.join(', ')}
                 </p>
               )}
-              <div className="mt-6 sm:mt-8 pt-5 border-t border-hexfn-green/10 flex flex-col-reverse sm:flex-row sm:items-center gap-3">
+              <div className="mt-6 sm:mt-8 pt-5 border-t border-hexfn-green/10 flex flex-col-reverse sm:flex-row sm:items-center gap-3 items-center">
                 <Button
                   variant="outline"
                   onClick={() => setSelected(null)}
-                  className="sm:order-last"
+                  className="sm:order-last w-full sm:w-auto justify-center"
                 >
                   Close
                 </Button>
@@ -214,7 +214,7 @@ export function ProductGrid() {
                   href={getWhatsAppUrlForProduct(selected.name)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2.5 rounded-2xl bg-hexfn-cta px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:shadow-cta-glow focus:outline-none focus:ring-2 focus:ring-hexfn-cta focus:ring-offset-2 transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-2xl bg-hexfn-cta px-5 py-2.5 w-full sm:w-auto text-sm font-semibold text-white shadow-soft hover:shadow-cta-glow focus:outline-none focus:ring-2 focus:ring-hexfn-cta focus:ring-offset-2 transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
                   aria-label={`Get quote on WhatsApp for ${selected.name}`}
                 >
                   <span className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg bg-white/20" aria-hidden>
